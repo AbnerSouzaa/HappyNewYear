@@ -51,7 +51,7 @@ class Counter: ObservableObject {
             self.hours = timeLeft.hour ?? 0
             self.minutes = timeLeft.minute ?? 0
             self.seconds = timeLeft.second ?? 0
-            //print( day)
+            
             }
         }
     }
