@@ -15,6 +15,8 @@ class Counter: ObservableObject {
     @Published var days = 0
     @Published var minutes = 0
     
+    var selectedDate = Date()
+    
     init() {
         
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true){timer in
@@ -27,25 +29,30 @@ class Counter: ObservableObject {
             
             let currentDate = calendar.date(from: components)
             print(currentDate)
+            
+            let selectedComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self.selectedDate)
         
             var eventDateComponents = DateComponents()
-            eventDateComponents.year = 2022
-            eventDateComponents.month = 1
-            eventDateComponents.day = 1
-            eventDateComponents.hour = 0
-            eventDateComponents.minute = 0
-            eventDateComponents.second = 0
+            eventDateComponents.year = selectedComponents.year
+            eventDateComponents.month = selectedComponents.month
+            eventDateComponents.day = selectedComponents.day
+            eventDateComponents.hour = selectedComponents.hour
+            eventDateComponents.minute = selectedComponents.minute
+            eventDateComponents.second = selectedComponents.second
             
             let eventDate = calendar.date(from: eventDateComponents)
             print(eventDate)
             
             let timeLeft = calendar.dateComponents([ .day, .hour, .minute, .second], from: currentDate!, to: eventDate!) // timeleft to event day
             
+            if (timeLeft.second! >= 0) {
+                
             self.days = timeLeft.day ?? 0
             self.hours = timeLeft.hour ?? 0
             self.minutes = timeLeft.minute ?? 0
             self.seconds = timeLeft.second ?? 0
             //print( day)
+            }
         }
     }
     
@@ -55,6 +62,10 @@ struct ContentView: View {
     @StateObject var counter = Counter()
     var body: some View {
         VStack {          //vertical
+            
+            DatePicker(selection: $counter.selectedDate, in: Date()..., displayedComponents: [.hourAndMinute, .date]) {
+                Text("Selecione uma data: ")
+            }
             
             HStack {               //horizontal
                 Text(" \(counter.days) Days")
